@@ -1,6 +1,6 @@
 <div align="center">
   <img src="http://logo.pifunc.com/pifunc.svg" alt="PIfunc Logo" width="200">
-  <h1>PIfunc</h1>
+  <h1><a href="https://www.pifunc.com/">PIfunc</a></h1>
   <p><strong>Protocol Interface Functions</strong></p>
   <p>One function, every protocol. Everywhere.</p>
   
