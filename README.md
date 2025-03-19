@@ -231,7 +231,7 @@ pifunc benchmark add --protocol grpc --iterations 1000 --concurrency 10
 
 ## 📖 Documentation
 
-Comprehensive documentation is available at [https://www.pifunc.com/docs](https://www.pifunc.com/docs)
+Comprehensive documentation is available at [https://docs.pifunc.com](https://docs.pifunc.com)
 
 - [API Reference](https://www.pifunc.com/docs/api-reference)
 - [Protocol Configurations](https://www.pifunc.com/docs/protocols)
