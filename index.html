@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PIfunc - Protocol Interface Functions</title>
+    <!-- Dodanie biblioteki Prism do kolorowania składni -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
         :root {
             --primary-color: #4B0082;
@@ -12,7 +14,7 @@
             --light-bg: #f8f9fa;
             --text-color: #333;
             --light-text: #fff;
-            --code-bg: #f5f5f5;
+            --code-bg: #2d2d2d;
         }
 
         * {
@@ -169,15 +171,21 @@
             color: var(--primary-color);
         }
 
-        code {
-            display: block;
-            background-color: var(--code-bg);
-            padding: 20px;
-            border-radius: 5px;
+        pre[class*="language-"] {
+            border-radius: 8px;
             margin: 20px 0;
-            overflow-x: auto;
-            white-space: pre;
+        }
+
+        code {
             font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Dodatkowy styl dla kodu inline */
+        code:not([class*="language-"]) {
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.9em;
         }
 
         .example-section {
@@ -202,11 +210,76 @@
             text-decoration: none;
         }
 
+        .example-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .example-tab {
+            padding: 10px 20px;
+            margin-right: 5px;
+            background-color: #f1f1f1;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-bottom: none;
+        }
+
+        .example-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .example-content {
+            display: none;
+        }
+
+        .example-content.active {
+            display: block;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .highlighted {
+            background-color: #ffff9980;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
             }
-            
+
             .feature-grid, .protocol-grid {
                 grid-template-columns: 1fr;
             }
@@ -243,8 +316,8 @@
 
     <section>
         <h2>What is PIfunc?</h2>
-        <p>PIfunc is a revolutionary framework that allows you to write your business logic once and expose it through multiple communication protocols without writing any additional code. With a single Python decorator, your functions become accessible via HTTP/REST, gRPC, MQTT, WebSocket, and GraphQL.</p>
-        
+        <p>PIfunc revolutionizes how you build networked applications by letting you <strong>write your function once</strong> and expose it via <strong>multiple communication protocols simultaneously</strong>. No duplicate code. No inconsistencies. Just clean, maintainable, protocol-agnostic code.</p>
+
         <div class="feature-grid">
             <div class="feature-card">
                 <h3>Write Once, Run Anywhere</h3>
@@ -255,8 +328,8 @@
                 <p>Forget about writing boilerplate code for different protocols. Add a single decorator and you're done.</p>
             </div>
             <div class="feature-card">
-                <h3>Type Safety</h3>
-                <p>Leverage Python's type hints for automatic validation and conversion across all protocols.</p>
+                <h3>Automatic Protocol Detection</h3>
+                <p>Just specify configuration for the protocols you want to use, and PIfunc automatically activates them. No need to list protocols separately.</p>
             </div>
         </div>
     </section>
@@ -264,74 +337,320 @@
     <section class="alternate protocol-section">
         <h2>Supported Protocols</h2>
         <p>PIfunc gives you the freedom to use the right protocol for each use case without changing your implementation.</p>
-        
-        <div class="protocol-grid">
-            <div class="protocol-card">
-                <div class="protocol-icon">HTTP</div>
-                <h3>HTTP/REST</h3>
-                <p>Perfect for web clients and general API access</p>
-            </div>
-            <div class="protocol-card">
-                <div class="protocol-icon">gRPC</div>
-                <h3>gRPC</h3>
-                <p>Ideal for high-performance microservices</p>
-            </div>
-            <div class="protocol-card">
-                <div class="protocol-icon">MQTT</div>
-                <h3>MQTT</h3>
-                <p>Great for IoT devices and pub/sub patterns</p>
-            </div>
-            <div class="protocol-card">
-                <div class="protocol-icon">WS</div>
-                <h3>WebSocket</h3>
-                <p>Real-time bidirectional communication</p>
-            </div>
-            <div class="protocol-card">
-                <div class="protocol-icon">GQL</div>
-                <h3>GraphQL</h3>
-                <p>Flexible queries with precise data retrieval</p>
-            </div>
-        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Protocol</th>
+                    <th>Description</th>
+                    <th>Best For</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>HTTP/REST</strong></td>
+                    <td>RESTful API with JSON</td>
+                    <td>Web clients, general API access</td>
+                </tr>
+                <tr>
+                    <td><strong>gRPC</strong></td>
+                    <td>High-performance RPC</td>
+                    <td>Microservices, performance-critical systems</td>
+                </tr>
+                <tr>
+                    <td><strong>MQTT</strong></td>
+                    <td>Lightweight pub/sub</td>
+                    <td>IoT devices, mobile apps</td>
+                </tr>
+                <tr>
+                    <td><strong>WebSocket</strong></td>
+                    <td>Bidirectional comms</td>
+                    <td>Real-time applications, chat</td>
+                </tr>
+                <tr>
+                    <td><strong>GraphQL</strong></td>
+                    <td>Query language</td>
+                    <td>Flexible data requirements</td>
+                </tr>
+                <tr>
+                    <td><strong>ZeroMQ</strong></td>
+                    <td>Distributed messaging</td>
+                    <td>High-throughput, low-latency systems</td>
+                </tr>
+                <tr>
+                    <td><strong>AMQP</strong></td>
+                    <td>Advanced Message Queuing</td>
+                    <td>Enterprise messaging, reliable delivery</td>
+                </tr>
+                <tr>
+                    <td><strong>Redis</strong></td>
+                    <td>In-memory data structure</td>
+                    <td>Caching, pub/sub, messaging</td>
+                </tr>
+                <tr>
+                    <td><strong>CRON</strong></td>
+                    <td>Scheduled tasks</td>
+                    <td>Periodic jobs, background tasks</td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 
     <section id="get-started" class="example-section">
         <h2>Get Started in Minutes</h2>
         <p>Installation is simple:</p>
-        <code>pip install pifunc</code>
-        
+        <pre><code class="language-bash">pip install pifunc</code></pre>
+
         <p>Create your first multi-protocol function:</p>
-        <code>from pifunc import service, run_services
+        <pre><code class="language-python">from pifunc import service, run_services
 
 @service(
-    http={"path": "/api/calculator/add", "method": "POST"},
-    mqtt={"topic": "calculator/add"},
-    websocket={"event": "calculator.add"}
+    http={"path": "/api/add", "method": "POST"},
+    websocket={"event": "math.add"},
+    grpc={}
 )
 def add(a: int, b: int) -> int:
-    """Adds two numbers."""
+    """Add two numbers together."""
     return a + b
 
 if __name__ == "__main__":
+    # Protocols are automatically detected from service configurations!
     run_services(
-        grpc={"port": 50051},
         http={"port": 8080},
-        mqtt={"broker": "localhost", "port": 1883},
         websocket={"port": 8081},
-        watch=True
-    )</code>
-        
+        grpc={"port": 50051},
+        watch=True  # Auto-reload on code changes
+    )</code></pre>
+
         <p>Run your service:</p>
-        <code>python your_service.py</code>
-        
+        <pre><code class="language-bash">python your_service.py</code></pre>
+
         <p>Now your 'add' function is simultaneously available through:</p>
         <ul>
-            <li>HTTP: <code>POST http://localhost:8080/api/calculator/add</code> with body <code>{"a": 5, "b": 3}</code></li>
-            <li>gRPC: Call the method <code>add</code> with parameters <code>a=5, b=3</code></li>
-            <li>MQTT: Publish to topic <code>calculator/add</code> with payload <code>{"a": 5, "b": 3}</code></li>
-            <li>WebSocket: Send event <code>calculator.add</code> with data <code>{"a": 5, "b": 3}</code></li>
-            <li>... all from the same codebase!</li>
+            <li>HTTP: <code>POST /api/add</code> with JSON body <code>{"a": 5, "b": 3}</code></li>
+            <li>WebSocket: Send event <code>math.add</code> with payload <code>{"a": 5, "b": 3}</code></li>
+            <li>gRPC: Call the <code>add</code> method with parameters <code>a=5, b=3</code></li>
         </ul>
-        
+
+        <h2>Code Examples</h2>
+
+        <div class="example-tabs">
+            <div class="example-tab active" onclick="switchTab('product-example')">Complete Product API</div>
+            <div class="example-tab" onclick="switchTab('parameter-handling')">Parameter Handling</div>
+            <div class="example-tab" onclick="switchTab('client-server')">Client-Server Pattern</div>
+            <div class="example-tab" onclick="switchTab('env-filter')">Protocol Filtering</div>
+            <div class="example-tab" onclick="switchTab('advanced-config')">Advanced Config</div>
+            <div class="example-tab" onclick="switchTab('cli-usage')">CLI Usage</div>
+        </div>
+
+        <div id="product-example" class="example-content active">
+            <h3>Complete Product API Example</h3>
+            <p>This example demonstrates protocol filtering, client-service communication with CRON scheduling, and the API landing page:</p>
+            <pre><code class="language-python"># product.py
+from random import randint, choice
+from string import ascii_letters
+import os
+import json
+
+# Optional: Filter protocols via environment variable
+os.environ["PIFUNC_PROTOCOLS"] = "http,cron"
+
+# Import pifunc after setting environment variables
+from pifunc import service, client, run_services
+
+
+@service(http={"path": "/api/products", "method": "POST"})
+def create_product(product: dict) -> dict:
+    """Create a new product."""
+    return {
+        "id": product["id"],
+        "name": product["name"],
+        "price": product["price"],
+        "in_stock": product.get("in_stock", True)
+    }
+
+
+@service(http={"path": "/", "method": "GET"})
+def hello() -> dict:
+    """API landing page with documentation."""
+    return {
+        "description": "Create a new product API",
+        "path": "/api/products",
+        "url": "http://127.0.0.1:8080/api/products/",
+        "method": "POST",
+        "protocol": "HTTP",
+        "version": "1.1",
+        "example_data": {
+            "id": "1",
+            "name": "test",
+            "price": "10",
+            "in_stock": True
+        },
+    }
+
+
+@client(http={"path": "/api/products", "method": "POST"})
+@service(cron={"interval": "1m"})
+def generate_product() -> dict:
+    """Generate a random product every minute."""
+    product = {
+        "id": str(randint(1000, 9999)),
+        "name": ''.join(choice(ascii_letters) for i in range(8)),
+        "price": str(randint(10, 100)),
+        "in_stock": True
+    }
+    print(f"Generating random product: {product}")
+    return product
+
+
+if __name__ == "__main__":
+    # Protocols are auto-detected, no need to specify them explicitly
+    run_services(
+        http={"port": 8080},
+        cron={"check_interval": 1},
+        watch=True
+    )</code></pre>
+
+            <p><strong>Key Features Demonstrated:</strong></p>
+            <ul>
+                <li><strong>Protocol Filtering</strong>: Using environment variables to limit which protocols are loaded</li>
+                <li><strong>API Creation</strong>: Creating a simple product API with POST endpoint</li>
+                <li><strong>Landing Page</strong>: Providing API documentation via a root endpoint</li>
+                <li><strong>Scheduled Client</strong>: Automatically generating random products every minute using the CRON protocol</li>
+                <li><strong>Auto Protocol Detection</strong>: The <code>run_services</code> function automatically detects which protocols to enable</li>
+                <li><strong>Simplified Client Syntax</strong>: Using the simplified <code>@client(http={...})</code> syntax</li>
+            </ul>
+        </div>
+
+        <div id="parameter-handling" class="example-content">
+            <h3>Parameter Handling</h3>
+            <pre><code class="language-python">@service(
+    http={"path": "/api/products", "method": "POST"},
+    mqtt={"topic": "products/create"}
+)
+def create_product(product: dict) -> dict:
+    """Create a new product.
+
+    Note: When working with dictionary parameters, use `dict` instead of `Dict`
+    for better type handling across protocols.
+    """
+    return {
+        "id": product["id"],
+        "name": product["name"],
+        "price": product["price"],
+        "in_stock": product.get("in_stock", True)
+    }</code></pre>
+        </div>
+
+        <div id="client-server" class="example-content">
+            <h3>Client-Server Pattern</h3>
+            <pre><code class="language-python">from pifunc import service, client, run_services
+import random
+
+# Server-side service
+@service(http={"path": "/api/products", "method": "POST"})
+def create_product(product: dict) -> dict:
+    """Create a new product."""
+    return {
+        "id": product["id"],
+        "name": product["name"],
+        "price": product["price"],
+        "created": True
+    }
+
+# Client-side function with scheduled execution
+@client(http={"path": "/api/products", "method": "POST"})  # Simplified syntax!
+@service(cron={"interval": "1h"})  # Run every hour
+def generate_product() -> dict:
+    """Generate a random product and send it to the create_product service."""
+    return {
+        "id": f"PROD-{random.randint(1000, 9999)}",
+        "name": f"Automated Product {random.randint(1, 100)}",
+        "price": round(random.uniform(10.0, 100.0), 2)
+    }
+
+if __name__ == "__main__":
+    # Protocols are auto-detected from registered services!
+    run_services(
+        http={"port": 8080},
+        cron={"check_interval": 1},
+        watch=True
+    )</code></pre>
+        </div>
+
+        <div id="env-filter" class="example-content">
+            <h3>Protocol Filtering with Environment Variables</h3>
+            <pre><code class="language-python"># Control available protocols via environment variables
+import os
+os.environ["PIFUNC_PROTOCOLS"] = "http,cron"  # Only enable HTTP and CRON
+
+from pifunc import service, run_services
+
+@service(
+    http={"path": "/api/data"},
+    grpc={},          # Will be ignored due to PIFUNC_PROTOCOLS
+    websocket={}      # Will be ignored due to PIFUNC_PROTOCOLS
+)
+def get_data():
+    return {"status": "success", "data": [...]}
+
+if __name__ == "__main__":
+    # Only HTTP and CRON adapters will be loaded
+    run_services(
+        http={"port": 8080},
+        watch=True
+    )</code></pre>
+        </div>
+
+        <div id="advanced-config" class="example-content">
+            <h3>Advanced Configuration</h3>
+            <pre><code class="language-python">@service(
+    # HTTP configuration
+    http={
+        "path": "/api/users/{user_id}",
+        "method": "GET",
+        "middleware": [auth_middleware, logging_middleware]
+    },
+    # MQTT configuration
+    mqtt={
+        "topic": "users/get",
+        "qos": 1,
+        "retain": False
+    },
+    # WebSocket configuration
+    websocket={
+        "event": "user.get",
+        "namespace": "/users"
+    },
+    # GraphQL configuration
+    graphql={
+        "field_name": "user",
+        "description": "Get user by ID"
+    }
+)
+def get_user(user_id: str) -> dict:
+    """Get user details by ID."""
+    return db.get_user(user_id)</code></pre>
+        </div>
+
+        <div id="cli-usage" class="example-content">
+            <h3>CLI Usage</h3>
+            <pre><code class="language-bash"># Start a service
+python your_service.py
+
+# Call a function via HTTP (default protocol)
+pifunc call add --args '{"a": 5, "b": 3}'
+
+# Call a function with specific protocol
+pifunc call add --protocol grpc --args '{"a": 5, "b": 3}'
+
+# Generate client code
+pifunc generate client --language python --output client.py
+
+# View service documentation
+pifunc docs serve</code></pre>
+        </div>
+
         <div style="text-align: center; margin-top: 30px;">
             <a href="https://github.com/pi-func/docs/blob/main/README.md" class="btn primary">Full Documentation</a>
             <a href="https://github.com/pi-func/python/blob/main/src/pifunc/example" class="btn">More Examples</a>
@@ -340,23 +659,23 @@ if __name__ == "__main__":
 
     <section>
         <h2>Why Developers Love PIfunc</h2>
-        
+
         <div class="feature-grid">
             <div class="feature-card">
                 <h3>DRY Code</h3>
                 <p>Don't Repeat Yourself. Implement business logic once, not for each protocol.</p>
             </div>
             <div class="feature-card">
-                <h3>Rapid Development</h3>
-                <p>Build and deploy faster with drastically reduced boilerplate code.</p>
+                <h3>Protocol Auto-Detection</h3>
+                <p>Just specify configuration for each protocol you want to use. No need to maintain redundant protocol lists.</p>
             </div>
             <div class="feature-card">
-                <h3>Consistent APIs</h3>
-                <p>Ensure consistency across all your endpoints and protocols.</p>
+                <h3>Environment Control</h3>
+                <p>Limit available protocols with <code>PIFUNC_PROTOCOLS</code> environment variable for different deployment environments.</p>
             </div>
             <div class="feature-card">
-                <h3>Future Proof</h3>
-                <p>Add new protocols as they emerge without rewriting your services.</p>
+                <h3>Simplified Client Syntax</h3>
+                <p>Create client functions with clean syntax that automatically detects which protocol to use.</p>
             </div>
             <div class="feature-card">
                 <h3>Hot Reload</h3>
@@ -369,18 +688,85 @@ if __name__ == "__main__":
         </div>
     </section>
 
+    <section class="alternate">
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Multi-Protocol Support</strong>: Expose functions via multiple protocols at once</li>
+            <li><strong>Protocol Auto-Detection</strong>: Just specify configuration for each protocol you want to use</li>
+            <li><strong>Zero Boilerplate</strong>: Single decorator approach with sensible defaults</li>
+            <li><strong>Type Safety</strong>: Automatic type validation and conversion</li>
+            <li><strong>Hot Reload</strong>: Instant updates during development</li>
+            <li><strong>Protocol-Specific Configurations</strong>: Fine-tune each protocol interface</li>
+            <li><strong>Automatic Documentation</strong>: OpenAPI, gRPC reflection, and GraphQL introspection</li>
+            <li><strong>Client Integration</strong>: Built-in client with <code>@client</code> decorator for inter-service communication</li>
+            <li><strong>Scheduled Tasks</strong>: CRON-like scheduling with <code>cron</code> protocol</li>
+            <li><strong>Environment Variable Control</strong>: Limit available protocols with <code>PIFUNC_PROTOCOLS</code></li>
+            <li><strong>Monitoring & Health Checks</strong>: Built-in observability</li>
+            <li><strong>Enterprise-Ready</strong>: Authentication, authorization, and middleware support</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Testing</h2>
+        <pre><code class="language-bash"># Install development dependencies
+pip install -r requirements-dev.txt
+
+# Run all tests
+pytest
+
+# Run specific test categories
+pytest tests/test_http_adapter.py
+pytest tests/test_integration.py</code></pre>
+
+        <h2>Contributing</h2>
+        <p>Contributions are welcome! See <a href="https://github.com/pi-func/python/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for how to get started.</p>
+
+        <ol>
+            <li>Fork the repository</li>
+            <li>Create your feature branch (<code>git checkout -b feature/amazing-feature</code>)</li>
+            <li>Commit your changes (<code>git commit -m 'Add some amazing feature'</code>)</li>
+            <li>Push to the branch (<code>git push origin feature/amazing-feature</code>)</li>
+            <li>Open a Pull Request</li>
+        </ol>
+    </section>
+
     <footer>
         <h2><span class="pi" style="color: white;">PI</span><span class="func" style="color: #1E90FF;">func</span></h2>
         <p>Protocol Interface Functions</p>
         <p>One function, every protocol. Everywhere.</p>
-        
+
         <div class="social-links">
             <a href="https://github.com/pi-func/pifunc">GitHub</a>
             <a href="https://docs.pifunc.com/">Documentation</a>
             <a href="https://community.pifunc.com/">Community</a>
         </div>
-        
+
         <p>&copy; 2025 PIfunc - Apache2 License</p>
     </footer>
+
+    <!-- Dodanie biblioteki Prism do kolorowania składni -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Skrypt do obsługi zakładek -->
+    <script>
+        function switchTab(tabId) {
+            // Ukryj wszystkie zawartości zakładek
+            const contents = document.getElementsByClassName('example-content');
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+
+            // Usuń aktywną klasę ze wszystkich zakładek
+            const tabs = document.getElementsByClassName('example-tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+
+            // Aktywuj wybraną zakładkę i jej zawartość
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
 </body>
 </html>
